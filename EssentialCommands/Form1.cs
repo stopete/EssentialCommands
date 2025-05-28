@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.Drawing;
 using System.Net.NetworkInformation;
+using System.Runtime.InteropServices;
 
 namespace EssentialCommands
 {
@@ -42,6 +43,8 @@ namespace EssentialCommands
             comboBox2.Items.Add("perfmon.msc: Launch the Performance Monitor. ");
             comboBox2.Items.Add("secpol.msc: Configure local security policies. ");
             comboBox2.Items.Add("gpedit.msc: Manage local group policies.");
+            comboBox2.Items.Add("SystemPropertiesComputerName.exe: Launch System Properties.");
+
 
             // At form load add items to the combobox1
             comboBox1.Items.Add("appwiz.cpl: Manage installed programs and features. ");
@@ -62,6 +65,106 @@ namespace EssentialCommands
             comboBox3.Items.Add("ping [ip address]: Check network connectivity. ");
             comboBox3.Items.Add("tracert [ip address]: Diagnose the network path. ");
             comboBox3.Items.Add("netsh wlan show profiles: List saved Wi-Fi profiles.");
+
+            // At form load add items to the combobox4
+            comboBox4.Items.Add("notepad: Open Notepad. ");
+            comboBox4.Items.Add("msinfo32: Get system information. ");
+            comboBox4.Items.Add("mstsc: Access Remote Desktop. ");
+            comboBox4.Items.Add("calc: Open the Calculator. ");
+            comboBox4.Items.Add("mspaint: Launch Paint. ");
+            comboBox4.Items.Add("snippingtool: Open the Snipping Tool. ");
+            comboBox4.Items.Add("magnify: Open the Magnifier. ");
+            comboBox4.Items.Add("osk: Display the On-Screen Keyboard.");
+
+            // At form load add items to the combobox5
+            comboBox5.Items.Add("%temp%: Open the temporary files folder. ");
+            comboBox5.Items.Add("%userprofile%: Open the active user's folder. ");
+            comboBox5.Items.Add("%windir%: Access the Windows folder");
+            comboBox5.Items.Add("explorer: Launch File Explorer. ");
+            comboBox5.Items.Add("syskey: Secure the user accounts database. ");
+            comboBox5.Items.Add("rstrui: Launch System Restore.");
+
+
+        }
+        public void Runpingcommand()
+        {
+
+            //MessageBox.Show("Hellow World");
+
+            // Start a new CMD process
+            Process cmd = new Process();
+            cmd.StartInfo.FileName = "cmd.exe";
+            cmd.Start();
+
+            // Give it a second to launch
+            Thread.Sleep(1000);
+
+            // Bring the CMD window to the front
+            bool v = SetForegroundWindow(cmd.MainWindowHandle);
+
+            // Simulate typing the ping command (without Enter)
+            SendKeys.SendWait("ping ");
+
+            // If you want to run it later, use:
+            // SendKeys.SendWait("{ENTER}");
+
+        }
+
+        public void Runtracertcommand()
+        {
+            // Start a new CMD process
+            Process cmd = new Process();
+            cmd.StartInfo.FileName = "cmd.exe";
+            cmd.Start();
+
+            // Give it a second to launch
+            Thread.Sleep(1000);
+
+            // Bring the CMD window to the front
+            bool v = SetForegroundWindow(cmd.MainWindowHandle);
+
+            // Simulate typing the ping command (without Enter)
+            SendKeys.SendWait("tracert ");
+
+            // If you want to run it later, use:
+            // SendKeys.SendWait("{ENTER}");
+
+        }
+
+        public void showwifiprofiles()
+        {
+
+            try
+            {
+                ProcessStartInfo psi = new ProcessStartInfo
+                {
+                    FileName = "netsh",
+                    Arguments = "wlan show profiles",
+                    RedirectStandardOutput = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
+
+                using (Process process = Process.Start(psi))
+                {
+                    string output = process.StandardOutput.ReadToEnd();
+                    process.WaitForExit();
+
+                    if (output.Contains("All User Profile"))
+                    {
+                        MessageBox.Show("Wi-Fi profiles found:\n\n" + output, "Profiles Found");
+                    }
+                    else
+                    {
+                        MessageBox.Show("No Wi-Fi profiles found.", "No Profiles", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An error occurred:\n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
 
         }
 
@@ -142,20 +245,22 @@ namespace EssentialCommands
 
                     Runcommand1(path9);
                     break;
+                case 10:
+                    // Action for index 10
+                    MessageBox.Show("You selected index 10");
+                    Process.Start(new ProcessStartInfo("SystemPropertiesComputerName.exe")
+                    {
+                        UseShellExecute = true
+                    });
+                    break;
                 default:
                     MessageBox.Show("Please select a valid option.");
                     break;
             }
 
-
-
         }
 
-        private void button2_Click(object sender, EventArgs e)
-        {
 
-
-        }
 
         private void button2_Click_1(object sender, EventArgs e)
         {
@@ -298,12 +403,236 @@ namespace EssentialCommands
 
                     break;
 
+                case 3:
+                    // Action for index 3
+                    MessageBox.Show("You selected index 3");
+
+                    Process.Start(new ProcessStartInfo("netplwiz.exe")
+                    {
+                        UseShellExecute = true
+                    });
+                    // Runpingcommand();
+                    break;
+                case 4:
+                    // Action for index 4
+                    MessageBox.Show("You selected index 4");
+
+                    Runpingcommand();
+
+                    break;
+                case 5:
+                    // Action for index 5
+                    MessageBox.Show("You selected index 5");
+
+                    Runtracertcommand();
+
+
+                    break;
+                case 6:
+                    // Action for index 6
+                    MessageBox.Show("You selected index 6");
+                    showwifiprofiles();
+                    break;
 
                 default:
                     MessageBox.Show("Please select a valid option.");
                     break;
 
             }
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            showwifiprofiles();
+
+
+
+        }
+
+        [DllImport("user32.dll")]
+        private static extern bool SetForegroundWindow(IntPtr hWnd);
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            int selectedIndex = comboBox4.SelectedIndex;
+
+            switch (selectedIndex)
+            {
+                case 0:
+                    // Action for index 0
+                    MessageBox.Show("You selected index 0");
+
+                    Process.Start(new ProcessStartInfo("notepad.exe")
+                    {
+                        UseShellExecute = true
+                    });
+
+                    break;
+                case 1:
+                    // Action for index 1
+                    MessageBox.Show("You selected index 1");
+
+                    Process.Start(new ProcessStartInfo("msinfo32.exe")
+                    {
+                        UseShellExecute = true
+                    });
+
+                    break;
+
+                case 2:
+                    // Action for index 2
+                    MessageBox.Show("You selected index 2");
+
+                    Process.Start(new ProcessStartInfo("mstsc.exe")
+                    {
+                        UseShellExecute = true
+                    });
+
+                    break;
+
+                case 3:
+                    // Action for index 3
+                    MessageBox.Show("You selected index 3");
+
+                    Process.Start(new ProcessStartInfo("calc.exe")
+                    {
+                        UseShellExecute = true
+                    });
+
+                    break;
+
+                case 4:
+                    // Action for index 4
+                    MessageBox.Show("You selected index 4");
+
+                    Process.Start(new ProcessStartInfo("mspaint.exe")
+                    {
+                        UseShellExecute = true
+                    });
+
+                    break;
+
+                case 5:
+                    // Action for index 5
+                    MessageBox.Show("You selected index 5");
+
+                    Process.Start(new ProcessStartInfo("snippingtool.exe")
+                    {
+                        UseShellExecute = true
+                    });
+
+                    break;
+
+                case 6:
+                    // Action for index 6
+                    MessageBox.Show("You selected index 6");
+
+                    Process.Start(new ProcessStartInfo("magnify.exe")
+                    {
+                        UseShellExecute = true
+                    });
+
+                    break;
+
+                case 7:
+                    // Action for index 7
+                    MessageBox.Show("You selected index 7");
+
+                    Process.Start(new ProcessStartInfo("osk.exe")
+                    {
+                        UseShellExecute = true
+                    });
+
+                    break;
+
+                default:
+                    MessageBox.Show("Please select a valid option.");
+                    break;
+
             }
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            int selectedIndex = comboBox5.SelectedIndex;
+
+            switch (selectedIndex)
+            {
+                case 0:
+                    // Action for index 0
+                    MessageBox.Show("You selected index 0");
+                    // Get the path to the Temp folder
+                    string tempPath = System.IO.Path.GetTempPath();
+
+                    // Open the folder in File Explorer
+                    Process.Start("explorer.exe", tempPath);
+
+                    break;
+                case 1:
+                    // Action for index 1
+                    MessageBox.Show("You selected index 1");
+                    // Get the path to the user's profile directory
+                    string userProfile = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+
+                    // Open it in File Explorer
+                    Process.Start("explorer.exe", userProfile);
+
+                    break;
+
+                case 2:
+                    // Action for index 2
+                    MessageBox.Show("You selected index 2");
+                    // Get the path to the user's profile directory
+                    // Get the Windows directory path
+
+                    //string windir = Environment.GetEnvironmentVariable("WINDIR");
+                    // Updated code to handle potential null value for the "WINDIR" environment variable
+                    string? windir = Environment.GetEnvironmentVariable("WINDIR");
+
+                    if (!string.IsNullOrEmpty(windir))
+                    {
+                        // Open it in File Explorer
+                        Process.Start("explorer.exe", windir);
+                    }
+                    else
+                    {
+                        MessageBox.Show("The WINDIR environment variable is not set.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                    // Open it in File Explorer
+                    if (!string.IsNullOrEmpty(windir))
+                    {
+                        Process.Start("explorer.exe", windir);
+                    }
+
+                    break;
+
+                case 3:
+                    // Action for index 3
+                    MessageBox.Show("You selected index 3");
+
+                    Process.Start(new ProcessStartInfo("explorer.exe")
+                    {
+                        UseShellExecute = true
+                    });
+
+                    break;
+                case 4:
+                    // Action for index 4
+                    MessageBox.Show("You selected index 4");
+
+                    Process.Start(new ProcessStartInfo("rstrui.exe")
+                    {
+                        UseShellExecute = true
+                    });
+
+                    break;
+
+
+                default:
+                    MessageBox.Show("Please select a valid option.");
+                    break;
+
+            }
+        }
     }
 }
