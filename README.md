@@ -4,8 +4,6 @@ A simple and organized Windows Forms application in C# that provides quick acces
 📌 Features
 The application is divided into tabs for easy navigation. Each tab contains buttons or links that launch commonly used Windows utilities and commands directly. The drop-down box will have a list of commands the user can select to run. 
 
-![![300ae3e48b1caee15b8eca573c95adab.png](./300ae3e48b1caee15b8eca573c95adab.png)
-
 🛠️ System Commands and Computer Management
 services.msc – Open the Services Manager
 
