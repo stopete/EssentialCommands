@@ -101,7 +101,7 @@ Clone this repository:
 bash
 Copy
 Edit
-git clone https://github.com/your-username/your-repo-name.git
+git clone https://github.com/stopete/EssentialCommands.git
 Open the solution in Visual Studio.
 
 Build and run the project (F5).
